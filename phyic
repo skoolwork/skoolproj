@@ -1,0 +1,59 @@
+import pygame
+import pymunk
+import pymunk.pygame_util
+import math
+
+pygame.init()
+
+WIDTH, HEIGHT = 600, 400
+window = pygame.display.set_mode((WIDTH, HEIGHT))
+
+
+def draw(space, window, draw_options):
+	window.fill((30,30,30))
+
+	space.debug_draw(draw_options)
+
+	pygame.display.update()
+
+def create_swinging_ball(space):
+	body = pymunk.Body()
+	body.position = (300, 300)
+	circle = pymunk.Circle(body, 40, (255, 0))
+	circle.friction = 0
+	circle.mass = 30
+	circle.elasticity = 1
+	space.add(circle, body)
+
+
+def run(window, width, height):
+	run = True
+	clock = pygame.time.Clock()
+	fps = 120
+	dt = 1 / fps
+
+	space = pymunk.Space()
+	space.gravity = (0, 0)
+
+	create_swinging_ball(space)
+
+	draw_options = pymunk.pygame_util.DrawOptions(window)
+
+	pressed_pos = None
+	ball = None
+
+	while run:
+
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				run = False
+				break
+
+		draw(space, window, draw_options)
+		space.step(dt)
+		clock.tick(fps)
+
+	pygame.quit()
+
+if __name__ == "__main__":
+	run(window, WIDTH, HEIGHT)
